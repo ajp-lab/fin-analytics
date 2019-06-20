@@ -15,8 +15,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## $ git remote -v
 ## Pushes the changes in your local repository up to the remote repository you specified as the origin 
 ## $ git push origin master
-
-
+## If that does not work, pull first
+## $ git pull origin master --allow-unrelated-histories
 
 ```{r cars}
 summary(cars)
