@@ -8,6 +8,14 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+## Small help, if project created in RStudio first, then connect to GitHub
+## Sets the new remote
+## $ git remote add origin remote repository URL
+## Verifies the new remote URL
+## $ git remote -v
+## Pushes the changes in your local repository up to the remote repository you specified as the origin 
+## $ git push origin master
+
 
 
 ```{r cars}
