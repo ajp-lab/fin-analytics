@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Small help, if project created in RStudio first, then connect to GitHub
+
 ## Sets the new remote
 ## $ git remote add origin remote repository URL
 ## Verifies the new remote URL
@@ -18,14 +19,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ## If that does not work, pull first
 ## $ git pull origin master --allow-unrelated-histories
 
-```{r cars}
-summary(cars)
+
+### Read the input csv dataset
+
+```{r}
+getwd()
+# Read csv, use ANSI encoding
+d.file <- read.csv("input/Konto_RB_2017.csv", sep=";", head=TRUE, stringsAsFactors=FALSE, encoding = "ANSI")
+head(d.file)
+dim(d.file)
+d.file
 ```
-
-## Including Plots
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
