@@ -10,14 +10,26 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ### Read the input csv dataset
-
 ```{r}
 getwd()
-# Read csv, use ANSI encoding
-d.file <- read.csv("input/Konto_RB_2017.csv", sep=";", head=TRUE, stringsAsFactors=FALSE, encoding = "ANSI")
-head(d.file)
-dim(d.file)
-d.file
+# Read Acc files, use ANSI encoding
+d.file17 <- read.csv("input/Acc_2017.csv", sep=";", head=TRUE, stringsAsFactors=FALSE, encoding = "ANSI")
+d.file18 <- read.csv("input/Acc_2018.csv", sep=";", head=TRUE, stringsAsFactors=FALSE, encoding = "ANSI")
+d.file19part <- read.csv("input/Acc_2019_07.csv", sep=";", head=TRUE, stringsAsFactors=FALSE, encoding = "ANSI")
+
+head(d.file17)
+dim(d.file17)
+d.file17
 ```
+
+### Clean and sort data
+```{r}
+getwd()
+d.file17
+
+
+
+```
+
 
 
