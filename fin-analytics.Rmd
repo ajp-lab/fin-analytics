@@ -9,7 +9,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### Read the input csv dataset
+```{r}
+library(dplyr) # Data wrangling
+library(stringr) # Flexible string ops (wildcard filtering)
+```
+
+### Read the input csv dataset - all Acc files are with detail infos
 ```{r}
 getwd()
 # Read Acc files, use ANSI encoding
@@ -25,11 +30,40 @@ d.file17
 ### Clean and sort data
 ```{r}
 getwd()
-d.file17
 
+# Deselect Valuta.Date, rename columns, format bookdate as date
+d.file17 <- dplyr::select(d.file17, -Valuta.Date)
+d.file17 <- dplyr::rename(d.file17, acc=IBAN, bookdate=Booked.At, text=Text, amount=Credit.Debit.Amount, balance=Balance)
+# TODO: Format as date
+#d.file17$bookdate <- as.Date(d.file17$bookdate, format="%Y-%m-%d hh:mm:ss")
+
+# Descr file
+str(d.file17)
+
+# Filter only valid bookings
+d.file17v <- d.file17 %>%
+  filter(str_detect(acc, "CH9180"))
+
+# Filter non-valid bookings
+d.file17nv <- d.file17 %>% 
+  filter(!str_detect(acc, "CH9180"))
 
 
 ```
+
+### Categorize data
+```{r}
+# Add a "type" column to the datafile
+d.file17v$type <- "other"
+
+# TODO: Add keywords, search them in text
+
+
+```
+
+
+
+
 
 
 
