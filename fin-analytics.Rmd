@@ -1,7 +1,7 @@
 ---
 title: "fin-analytics"
 author: "AP"
-date: "19 Juni 2019"
+date: "Juni 2019"
 output: html_document
 ---
 
@@ -56,7 +56,33 @@ d.file17nv <- d.file17 %>%
 # Add a "type" column to the datafile
 d.file17v$type <- "other"
 
-# TODO: Add keywords, search them in text
+# TODO: Add keywords, search them in text, update type (category)
+d.file17v
+
+# a. Keywords
+cash <- "Bancomat"
+shop <- "Einkauf"
+ebanking <- "E-Banking"
+creditcard <- "CARD"
+plus <- "Gutschrift"
+
+# b. Search and c. update
+# TEST
+d.file17v %>%
+  select(text, type) %>%
+  filter(stringr::str_detect(text, cash)) %>%
+  mutate(type="Cash")
+
+# TEST with case when, assign other to unknown, show all other
+d.file17v %>%
+  mutate(type = case_when(
+    stringr::str_detect(text, cash) ~ "Cash",
+    stringr::str_detect(text, shop) ~ "Shop",
+    stringr::str_detect(text, ebanking) ~ "E-Banking",
+    stringr::str_detect(text, creditcard) ~ "CreditCard",
+    stringr::str_detect(text, plus) ~ "Plus",
+    TRUE ~ "Other")) %>%
+  filter(stringr::str_detect(type, "Other"))
 
 
 ```
