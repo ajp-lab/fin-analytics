@@ -11,7 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(dplyr) # Data wrangling
+library(ggplot2) # Graphics
+library(plyr) # Aggregating
 library(stringr) # Flexible string ops (wildcard filtering)
+
+
 ```
 
 ### Read the input csv dataset - all Acc files are with detail infos
@@ -34,8 +38,9 @@ getwd()
 # Deselect Valuta.Date, rename columns, format bookdate as date
 d.file17 <- dplyr::select(d.file17, -Valuta.Date)
 d.file17 <- dplyr::rename(d.file17, acc=IBAN, bookdate=Booked.At, text=Text, amount=Credit.Debit.Amount, balance=Balance)
-# TODO: Format as date
-#d.file17$bookdate <- as.Date(d.file17$bookdate, format="%Y-%m-%d hh:mm:ss")
+
+# Format as DATE (However, hh:mm:ss information is lost)
+d.file17$bookdate <- as.Date(d.file17$bookdate, format="%Y-%m-%d")
 
 # Descr file
 str(d.file17)
@@ -48,7 +53,6 @@ d.file17v <- d.file17 %>%
 d.file17nv <- d.file17 %>% 
   filter(!str_detect(acc, "CH9180"))
 
-
 ```
 
 ### Categorize data
@@ -56,8 +60,9 @@ d.file17nv <- d.file17 %>%
 # Add a "type" column to the datafile
 d.file17v$type <- "other"
 
-# TODO: Add keywords, search them in text, update type (category)
+# Add keywords, search them in text, update type (category)
 d.file17v
+str(d.file17v)
 
 # a. Keywords
 cash <- "Bancomat"
@@ -84,10 +89,59 @@ d.file17v %>%
     TRUE ~ "Other")) %>%
   filter(stringr::str_detect(type, "Other"))
 
+# Effectively update categories
+# TEST with case when, assign other to unknown, show all other
+d.file17v <- d.file17v %>%
+  mutate(type = case_when(
+    stringr::str_detect(text, cash) ~ "Cash",
+    stringr::str_detect(text, shop) ~ "Shop",
+    stringr::str_detect(text, ebanking) ~ "E-Banking",
+    stringr::str_detect(text, creditcard) ~ "CreditCard",
+    stringr::str_detect(text, plus) ~ "Plus",
+    TRUE ~ "Other"))
+
 
 ```
 
+### Aggregate and plot data
+```{r}
+# Add month field for aggregation
+d.file17v$month <- as.Date(cut(d.file17v$bookdate, breaks="month"))
 
+# Summary table, monthly spendings per type (category)
+sm17v <- ddply(d.file17v, .(month, type), summarise, cost=abs(sum(amount)))
+
+# PLOT 1: Monthly values according to type (category)
+ggplot(sm17v, aes(month, cost, col=type)) +
+  facet_wrap(~type, ncol=2, scale="free_y") +
+  geom_smooth(method="loess", se=F) + geom_point() +
+  theme(axis.text.x=element_text(angle=45, hjust=1),
+        legend.position="none") +
+  labs(x="", y="Monthly total (CHF)")
+
+ggsave("output/sm17v.png")
+
+# PLOT 2: Mean monthly spend according to type (category)
+smm17v <- ddply(sm17v, .(type), summarise, m=mean(cost))
+ggplot(smm17v, aes(x=type, y=m)) + 
+  geom_bar(stat="identity") +
+  labs(y="Average monthly category sums (CHF)", x="")
+
+ggsave("output/smm17v.png")
+
+# PLOT 3: Amount vs. balance for the year
+# Select only bookdate, balance, amount
+ead17v <- d.file17v %>%
+  select(bookdate, balance, amount)
+
+ggplot(ead17v, aes(bookdate))+
+  geom_line(aes(y=balance, colour="Balance"))+
+  geom_line(aes(y=amount, colour="Amount"))+
+  labs(x="Booking date", y="CHF")
+
+ggsave("output/ead17v.png")
+
+```
 
 
 
