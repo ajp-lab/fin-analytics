@@ -65,11 +65,11 @@ d.file17v
 str(d.file17v)
 
 # a. Keywords
-cash <- "Bancomat"
+cash <- "Bancomat|Bankomat"
 shop <- "Einkauf"
-ebanking <- "E-Banking"
-creditcard <- "CARD"
-plus <- "Gutschrift"
+ebanking <- "E-Banking|ebanking"
+creditcard <- "Card"
+plus <- "Gutschrift|Lohn|Salär|Vergütung"
 
 # b. Search and c. update
 # TEST
@@ -81,23 +81,22 @@ d.file17v %>%
 # TEST with case when, assign other to unknown, show all other
 d.file17v %>%
   mutate(type = case_when(
-    stringr::str_detect(text, cash) ~ "Cash",
-    stringr::str_detect(text, shop) ~ "Shop",
-    stringr::str_detect(text, ebanking) ~ "E-Banking",
-    stringr::str_detect(text, creditcard) ~ "CreditCard",
-    stringr::str_detect(text, plus) ~ "Plus",
+    stringr::str_detect(text, regex(cash, ignore_case=TRUE)) ~ "Cash",
+    stringr::str_detect(text, regex(shop, ignore_case = TRUE)) ~ "Shop",
+    stringr::str_detect(text, regex(ebanking, ignore_case = TRUE)) ~ "E-Banking",
+    stringr::str_detect(text, regex(creditcard, ignore_case = TRUE)) ~ "CreditCard",
+    stringr::str_detect(text, regex(plus, ignore_case = TRUE)) ~ "Plus",
     TRUE ~ "Other")) %>%
   filter(stringr::str_detect(type, "Other"))
 
 # Effectively update categories
-# TEST with case when, assign other to unknown, show all other
 d.file17v <- d.file17v %>%
   mutate(type = case_when(
-    stringr::str_detect(text, cash) ~ "Cash",
-    stringr::str_detect(text, shop) ~ "Shop",
-    stringr::str_detect(text, ebanking) ~ "E-Banking",
-    stringr::str_detect(text, creditcard) ~ "CreditCard",
-    stringr::str_detect(text, plus) ~ "Plus",
+    stringr::str_detect(text, regex(cash, ignore_case=TRUE)) ~ "Cash",
+    stringr::str_detect(text, regex(shop, ignore_case = TRUE)) ~ "Shop",
+    stringr::str_detect(text, regex(ebanking, ignore_case = TRUE)) ~ "E-Banking",
+    stringr::str_detect(text, regex(creditcard, ignore_case = TRUE)) ~ "CreditCard",
+    stringr::str_detect(text, regex(plus, ignore_case = TRUE)) ~ "Plus",
     TRUE ~ "Other"))
 
 
@@ -117,9 +116,10 @@ ggplot(sm17v, aes(month, cost, col=type)) +
   geom_smooth(method="loess", se=F) + geom_point() +
   theme(axis.text.x=element_text(angle=45, hjust=1),
         legend.position="none") +
-  labs(x="", y="Monthly total (CHF)")
+  labs(x="", y="Monthly total (CHF)") +
+  scale_x_date(date_breaks = "1 month")
 
-ggsave("output/sm17v.png")
+ggsave("output/sm17v.png", scale=2, width=10, height=10, dpi=300)
 
 # PLOT 2: Mean monthly spend according to type (category)
 smm17v <- ddply(sm17v, .(type), summarise, m=mean(cost))
@@ -127,7 +127,7 @@ ggplot(smm17v, aes(x=type, y=m)) +
   geom_bar(stat="identity") +
   labs(y="Average monthly category sums (CHF)", x="")
 
-ggsave("output/smm17v.png")
+ggsave("output/smm17v.png", scale=2, width=10, height=10, dpi=300)
 
 # PLOT 3: Amount vs. balance for the year
 # Select only bookdate, balance, amount
@@ -137,9 +137,10 @@ ead17v <- d.file17v %>%
 ggplot(ead17v, aes(bookdate))+
   geom_line(aes(y=balance, colour="Balance"))+
   geom_line(aes(y=amount, colour="Amount"))+
-  labs(x="Booking date", y="CHF")
+  labs(x="Booking date", y="CHF") +
+  scale_x_date(date_breaks = "1 month")
 
-ggsave("output/ead17v.png")
+ggsave("output/ead17v.png", scale=2, width=10, height=10, dpi=300)
 
 ```
 
