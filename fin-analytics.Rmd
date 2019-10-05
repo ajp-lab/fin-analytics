@@ -119,15 +119,16 @@ ggplot(sm17v, aes(month, cost, col=type)) +
   labs(x="", y="Monthly total (CHF)") +
   scale_x_date(date_breaks = "1 month")
 
-ggsave("output/sm17v.png", scale=2, width=10, height=10, dpi=300)
+ggsave("output/sm17v.png", scale=2, width=10, height=10, dpi=150)
 
 # PLOT 2: Mean monthly spend according to type (category)
 smm17v <- ddply(sm17v, .(type), summarise, m=mean(cost))
 ggplot(smm17v, aes(x=type, y=m)) + 
   geom_bar(stat="identity") +
-  labs(y="Average monthly category sums (CHF)", x="")
+  labs(y="Average monthly category sums (CHF)", x="") +
+  scale_y_continuous(breaks=seq(0, 10000, by = 1000))
 
-ggsave("output/smm17v.png", scale=2, width=10, height=10, dpi=300)
+ggsave("output/smm17v.png", scale=2, width=10, height=10, dpi=150)
 
 # PLOT 3: Amount vs. balance for the year
 # Select only bookdate, balance, amount
@@ -138,9 +139,10 @@ ggplot(ead17v, aes(bookdate))+
   geom_line(aes(y=balance, colour="Balance"))+
   geom_line(aes(y=amount, colour="Amount"))+
   labs(x="Booking date", y="CHF") +
-  scale_x_date(date_breaks = "1 month")
+  scale_x_date(date_breaks = "1 month") +
+  scale_y_continuous(breaks=seq(-10000, 30000, by = 1000))
 
-ggsave("output/ead17v.png", scale=2, width=10, height=10, dpi=300)
+ggsave("output/ead17v.png", scale=2, width=10, height=10, dpi=150)
 
 ```
 
