@@ -66,10 +66,13 @@ str(d.file17v)
 
 # a. Keywords
 cash <- "Bancomat|Bankomat"
-shop <- "Einkauf"
-ebanking <- "E-Banking|ebanking"
 creditcard <- "Card"
+ebanking <- "E-Banking|ebanking"
 plus <- "Gutschrift|Lohn|Salär|Vergütung"
+groceries <- "Bipa|Coop|Denner|Drogerie|Ecenter|Edeka|Kiosk|Lidl|Migro|Mueller|Rewe|Spar|Volg|Woolworth"
+shopping <- "Chicoree|Deichmann|Dosenbach|H & M|H&M|Kik|May|Metro|Movesa|New Yorker|Orsay|Pimkie|Sport|Tally|Tailor|Vedia|Zebra"
+gas_parking <- "Tank|Park"
+other_buy <- "Einkauf"
 
 # b. Search and c. update
 # TEST
@@ -82,10 +85,13 @@ d.file17v %>%
 d.file17v %>%
   mutate(type = case_when(
     stringr::str_detect(text, regex(cash, ignore_case=TRUE)) ~ "Cash",
-    stringr::str_detect(text, regex(shop, ignore_case = TRUE)) ~ "Shop",
-    stringr::str_detect(text, regex(ebanking, ignore_case = TRUE)) ~ "E-Banking",
     stringr::str_detect(text, regex(creditcard, ignore_case = TRUE)) ~ "CreditCard",
+    stringr::str_detect(text, regex(ebanking, ignore_case = TRUE)) ~ "E-Banking",
     stringr::str_detect(text, regex(plus, ignore_case = TRUE)) ~ "Plus",
+    stringr::str_detect(text, regex(groceries, ignore_case = TRUE)) ~ "Lebensmittel",
+    stringr::str_detect(text, regex(shopping, ignore_case = TRUE)) ~ "Shopping",
+    stringr::str_detect(text, regex(gas_parking, ignore_case = TRUE)) ~ "Gas & Parken",
+    stringr::str_detect(text, regex(other_buy, ignore_case = TRUE)) ~ "Sonstiger Einkauf",
     TRUE ~ "Other")) %>%
   filter(stringr::str_detect(type, "Other"))
 
@@ -93,10 +99,13 @@ d.file17v %>%
 d.file17v <- d.file17v %>%
   mutate(type = case_when(
     stringr::str_detect(text, regex(cash, ignore_case=TRUE)) ~ "Cash",
-    stringr::str_detect(text, regex(shop, ignore_case = TRUE)) ~ "Shop",
-    stringr::str_detect(text, regex(ebanking, ignore_case = TRUE)) ~ "E-Banking",
     stringr::str_detect(text, regex(creditcard, ignore_case = TRUE)) ~ "CreditCard",
+    stringr::str_detect(text, regex(ebanking, ignore_case = TRUE)) ~ "E-Banking",
     stringr::str_detect(text, regex(plus, ignore_case = TRUE)) ~ "Plus",
+    stringr::str_detect(text, regex(groceries, ignore_case = TRUE)) ~ "Lebensmittel",
+    stringr::str_detect(text, regex(shopping, ignore_case = TRUE)) ~ "Shopping",
+    stringr::str_detect(text, regex(gas_parking, ignore_case = TRUE)) ~ "Gas & Parken",
+    stringr::str_detect(text, regex(other_buy, ignore_case = TRUE)) ~ "Sonstiger Einkauf",
     TRUE ~ "Other"))
 
 
